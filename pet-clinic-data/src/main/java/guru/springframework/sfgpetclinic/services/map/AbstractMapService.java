@@ -1,7 +1,5 @@
 package guru.springframework.sfgpetclinic.services.map;
 
-import guru.springframework.sfgpetclinic.model.Owner;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +29,4 @@ public abstract class AbstractMapService<T, ID> {
     void delete(T object){
         map.entrySet().removeIf(entry -> entry.getValue().equals(object));
     }
-
-
 }
