@@ -12,7 +12,10 @@ public abstract class AbstractMapService<T extends BaseEntity, ID extends Long> 
     }
 
     T findById(ID id){
-        return map.get(id);
+        if (map.containsKey(id))
+            return map.get(id);
+        else
+            return null;
     }
 
     T save(T object){
