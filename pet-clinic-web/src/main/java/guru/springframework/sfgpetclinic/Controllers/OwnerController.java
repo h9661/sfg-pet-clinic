@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@RequestMapping("/owners")
 @Controller
+@RequestMapping("/owners")
 public class OwnerController {
     OwnerService ownerService;
 
@@ -98,3 +98,4 @@ public class OwnerController {
     }
 
 }
+
