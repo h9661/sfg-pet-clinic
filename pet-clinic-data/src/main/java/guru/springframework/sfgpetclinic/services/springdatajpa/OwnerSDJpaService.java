@@ -45,6 +45,7 @@ public class OwnerSDJpaService implements OwnerService {
             return null;
     }
 
+
     @Override
     public Owner save(Owner object) {
         return ownerRepository.save(object);
@@ -57,6 +58,6 @@ public class OwnerSDJpaService implements OwnerService {
 
     @Override
     public void deleteById(Long aLong) {
-        ownerRepository.deleteById(aLong);
     }
+
 }

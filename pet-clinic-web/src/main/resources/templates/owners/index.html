@@ -14,6 +14,7 @@
         <th style="width: 150px;">Id</th>
         <th style="width: 150px;">First Name</th>
         <th style="width: 150px;">Last Name</th>
+        <th style="width: 150px;">Detail</th>
     </tr>
     </thead>
     <tbody>
@@ -21,6 +22,12 @@
         <td th:text="${owner.id}">1</td>
         <td th:text="${owner.firstName}">Joe</td>
         <td th:text="${owner.lastName}">Buck</td>
+        <td>
+            <div class="col-md-1">
+                <a class="btn btn-default" href="#"
+                   th:href="@{'/owners/' + ${owner.id}}" role="button">Detail</a>
+            </div>
+        </td>
     </tr>
     </tbody>
 </table>
