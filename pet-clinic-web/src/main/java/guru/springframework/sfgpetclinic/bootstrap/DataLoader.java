@@ -15,17 +15,20 @@ public class DataLoader implements CommandLineRunner {
     private final PetTypeService petTypeService;
     private final SpecialtyService specialityService;
     private final VisitService visitService;
+    private final PetService petService;
 
     public DataLoader(OwnerService ownerService,
                       VetService vetService,
                       PetTypeService petTypeService,
                       SpecialtyService specialityService,
-                      VisitService visitService) {
+                      VisitService visitService,
+                      PetService petService) {
         this.ownerService = ownerService;
         this.vetService = vetService;
         this.petTypeService = petTypeService;
         this.specialityService = specialityService;
         this.visitService = visitService;
+        this.petService = petService;
     }
 
     @Override
@@ -74,6 +77,7 @@ public class DataLoader implements CommandLineRunner {
         owner1.getPets().add(pet1);
 
         ownerService.save(owner1);
+        petService.save(pet1);
 
         Owner owner2 = new Owner();
         owner2.setFirstName("Chan2");
@@ -81,6 +85,7 @@ public class DataLoader implements CommandLineRunner {
         owner2.setAddress("123 good");
         owner2.setCity("hello city");
         owner2.setTelephone("123-123-123");
+
         Pet pet2 = new Pet();
         pet2.setPetType(cat);
         pet2.setOwner(owner2);
@@ -89,7 +94,7 @@ public class DataLoader implements CommandLineRunner {
         owner2.getPets().add(pet2);
 
         ownerService.save(owner2);
-        System.out.println("Loaded Owners...");
+        petService.save(pet2);
 
         Visit catVisit = new Visit();
         catVisit.setPet(pet2);
@@ -97,7 +102,6 @@ public class DataLoader implements CommandLineRunner {
         catVisit.setDescription("Snezzy Kitty");
 
         visitService.save(catVisit);
-        System.out.println("Loaded Visit...");
 
         Vet vet1 = new Vet();
         vet1.setFirstName("good");
@@ -113,7 +117,5 @@ public class DataLoader implements CommandLineRunner {
         vet2.getSpecialities().add(dent);
 
         vetService.save(vet2);
-
-        System.out.println("Loaded Vets...");
     }
 }
