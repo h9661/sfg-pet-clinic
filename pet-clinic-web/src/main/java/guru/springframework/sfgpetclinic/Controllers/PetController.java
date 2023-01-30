@@ -3,6 +3,7 @@ package guru.springframework.sfgpetclinic.Controllers;
 import guru.springframework.sfgpetclinic.model.Owner;
 import guru.springframework.sfgpetclinic.model.Pet;
 import guru.springframework.sfgpetclinic.model.PetType;
+import guru.springframework.sfgpetclinic.model.Visit;
 import guru.springframework.sfgpetclinic.repositories.OwnerRepository;
 import guru.springframework.sfgpetclinic.repositories.PetRepository;
 import guru.springframework.sfgpetclinic.services.OwnerService;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Controller
@@ -54,6 +56,33 @@ public class PetController {
         savedPet.setBirthDate(pet.getBirthDate());
 
         petService.save(savedPet);
+
+        return "redirect:/owners/" + ownerId;
+    }
+
+    @GetMapping("/pets/new")
+    public String initNewPets(@PathVariable("ownerId") String id, Model model){
+        Pet pet = new Pet();
+        pet.setOwner(ownerService.findById(Long.valueOf(id)));
+        model.addAttribute("pet", pet);
+
+        return "pets/createOrUpdatePetForm";
+    }
+
+    @PostMapping("/pets/new")
+    public String newPets(@PathVariable("ownerId") String ownerId, @ModelAttribute Pet pet){
+        Pet newPet = new Pet();
+        Owner owner = ownerService.findById(Long.valueOf(ownerId));
+
+        newPet.setName(pet.getName());
+        newPet.setPetType(pet.getPetType());
+        newPet.setBirthDate(pet.getBirthDate());
+        newPet.setVisits(new HashSet<>());
+
+        owner.getPets().add(newPet);
+        newPet.setOwner(owner);
+
+        ownerService.save(owner);
 
         return "redirect:/owners/" + ownerId;
     }
