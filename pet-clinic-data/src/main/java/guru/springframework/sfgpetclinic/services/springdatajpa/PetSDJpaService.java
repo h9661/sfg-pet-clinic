@@ -3,10 +3,13 @@ package guru.springframework.sfgpetclinic.services.springdatajpa;
 import guru.springframework.sfgpetclinic.model.Pet;
 import guru.springframework.sfgpetclinic.repositories.PetRepository;
 import guru.springframework.sfgpetclinic.services.PetService;
+import org.hibernate.annotations.NotFound;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -29,7 +32,14 @@ public class PetSDJpaService implements PetService {
 
     @Override
     public Pet findById(Long aLong) {
-        return petRepository.findById(aLong).orElse(null);
+        Optional<Pet> petOptional = petRepository.findById(aLong);
+
+        if(petOptional.isPresent()){
+            return petOptional.get();
+        }
+        else{
+            throw new NotFoundException("cant find pet id: " + aLong.toString());
+        }
     }
 
     @Override
