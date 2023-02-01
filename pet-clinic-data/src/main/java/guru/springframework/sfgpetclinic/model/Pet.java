@@ -3,6 +3,8 @@ package guru.springframework.sfgpetclinic.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +18,7 @@ import java.util.Set;
 @Table(name = "pets")
 public class Pet extends BaseEntity {
 
+    @NotBlank
     @Column(name = "name")
     private String name;
 

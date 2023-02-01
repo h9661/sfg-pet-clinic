@@ -3,6 +3,9 @@ package guru.springframework.sfgpetclinic.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,12 +17,16 @@ import java.util.Set;
 @Entity
 @Table(name = "owners")
 public class Owner extends Person{
+
+    @NotBlank
     @Column(name = "address")
     private String address;
 
+    @NotBlank
     @Column(name = "city")
     private String city;
 
+    @NotBlank
     @Column(name = "telephone")
     private String telephone;
 
