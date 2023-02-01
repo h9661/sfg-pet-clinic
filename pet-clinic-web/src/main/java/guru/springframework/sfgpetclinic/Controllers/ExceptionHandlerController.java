@@ -21,4 +21,15 @@ public class ExceptionHandlerController {
 
         return "404error";
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public String handleBadRequestError(Exception exception, Model model){
+        log.error("handling NumberFormatError");
+        log.error(exception.getMessage());
+
+        model.addAttribute("exception", exception);
+
+        return "400error";
+    }
 }
