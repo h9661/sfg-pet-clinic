@@ -5,6 +5,7 @@ import guru.springframework.sfgpetclinic.repositories.OwnerRepository;
 import guru.springframework.sfgpetclinic.services.OwnerService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -39,10 +40,12 @@ public class OwnerSDJpaService implements OwnerService {
     public Owner findById(Long aLong) {
         Optional<Owner> ownerOptional = ownerRepository.findById(aLong);
 
-        if (ownerOptional.isPresent())
+        if (ownerOptional.isPresent()) {
             return ownerOptional.get();
-        else
-            return null;
+        }
+        else{
+            throw new NotFoundException("Owner Cannot Find. for id:" + aLong.toString());
+        }
     }
 
 
