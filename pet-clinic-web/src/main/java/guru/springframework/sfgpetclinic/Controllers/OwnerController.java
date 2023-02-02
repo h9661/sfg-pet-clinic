@@ -2,15 +2,19 @@ package guru.springframework.sfgpetclinic.Controllers;
 
 import guru.springframework.sfgpetclinic.model.Owner;
 import guru.springframework.sfgpetclinic.services.OwnerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.Banner;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Controller
 @RequestMapping("/owners")
 public class OwnerController {
@@ -35,7 +39,7 @@ public class OwnerController {
     }
 
     @GetMapping
-    public String findByLastNameOwners(@ModelAttribute Owner passedOwner, Model model){
+    public String findByLastNameOwners(@ModelAttribute("owner") Owner passedOwner, Model model){
         Set<Owner> ownerSet = new HashSet<>();
 
         for (Owner owner : ownerService.findAll()){
@@ -59,7 +63,15 @@ public class OwnerController {
     }
 
     @PostMapping("/new")
-    public String newOwner(@ModelAttribute Owner owner){
+    public String newOwner(@Valid @ModelAttribute("owner") Owner owner, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            return "owners/createOrUpdateOwnerForm";
+        }
+
         ownerService.save(owner);
 
         return "owners/findOwners";
@@ -82,7 +94,15 @@ public class OwnerController {
     }
 
     @PostMapping("/{ownerId}/edit")
-    public String editOwner(@PathVariable("ownerId") String id, @ModelAttribute Owner passedOwner){
+    public String editOwner(@PathVariable("ownerId") String id, @Valid @ModelAttribute("owner") Owner passedOwner, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            return "owners/createOrUpdateOwnerForm";
+        }
+
         Owner owner = new Owner();
 
         owner.setId(Long.valueOf(id));
