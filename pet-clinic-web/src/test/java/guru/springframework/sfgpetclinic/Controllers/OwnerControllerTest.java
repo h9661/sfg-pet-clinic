@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
@@ -106,12 +107,16 @@ class OwnerControllerTest {
     @Test
     void testNewOwner() throws Exception{
         Owner owner = new Owner();
-        owner.setId(1L);
-        owner.setLastName("abc");
 
         when(ownerService.save(any())).thenReturn(owner);
 
-        mockMvc.perform(post("/owners/new"))
+        mockMvc.perform(post("/owners/new")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
+                .param("City", "abc")
+                .param("address", "abc")
+                .param("telephone", "abc")
+        )
                 .andExpect(status().isOk())
                 .andExpect(view().name("owners/findOwners"));
 
