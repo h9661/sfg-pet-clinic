@@ -9,14 +9,18 @@ import guru.springframework.sfgpetclinic.repositories.PetRepository;
 import guru.springframework.sfgpetclinic.services.OwnerService;
 import guru.springframework.sfgpetclinic.services.PetService;
 import guru.springframework.sfgpetclinic.services.PetTypeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Controller
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
@@ -48,7 +52,18 @@ public class PetController {
     }
 
     @PostMapping("/pets/{petId}/edit")
-    public String editPets(@PathVariable("petId") String id, @PathVariable("ownerId") String ownerId, @ModelAttribute Pet pet){
+    public String editPets(@PathVariable("petId") String id, @PathVariable("ownerId") String ownerId, @Valid @ModelAttribute("pet") Pet pet, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            pet.setOwner(ownerService.findById(Long.valueOf(ownerId)));
+            model.addAttribute("pet", pet);
+
+            return "pets/createOrUpdatePetForm";
+        }
+
         Pet savedPet = petService.findById(Long.valueOf(id));
 
         savedPet.setName(pet.getName());
@@ -70,7 +85,18 @@ public class PetController {
     }
 
     @PostMapping("/pets/new")
-    public String newPets(@PathVariable("ownerId") String ownerId, @ModelAttribute Pet pet){
+    public String newPets(@PathVariable("ownerId") String ownerId, @Valid @ModelAttribute("pet") Pet pet, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            pet.setOwner(ownerService.findById(Long.valueOf(ownerId)));
+            model.addAttribute("pet", pet);
+
+            return "pets/createOrUpdatePetForm";
+        }
+
         Pet newPet = new Pet();
         Owner owner = ownerService.findById(Long.valueOf(ownerId));
 
