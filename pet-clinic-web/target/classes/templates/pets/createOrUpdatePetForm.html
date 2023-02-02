@@ -7,12 +7,17 @@
     Pet
   </h2>
   <form th:object="${pet}" class="form-horizontal" method="post">
+
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+      <p>Please Correct Errors Below</p>
+    </div>
+
     <input type="hidden" name="id" th:value="*{id}" />
     <div class="form-group has-feedback">
       <div class="form-group">
         <label class="col-sm-2 control-label">Owner</label>
         <div class="col-sm-10">
-          <span th:text="${pet.owner.firstName + ' ' + pet.owner.lastName}" />
+          <span th:text="${pet?.owner?.firstName + ' ' + pet?.owner?.lastName}" />
         </div>
       </div>
       <input
