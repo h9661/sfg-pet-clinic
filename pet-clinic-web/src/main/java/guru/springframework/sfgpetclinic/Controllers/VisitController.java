@@ -5,10 +5,16 @@ import guru.springframework.sfgpetclinic.model.Visit;
 import guru.springframework.sfgpetclinic.services.OwnerService;
 import guru.springframework.sfgpetclinic.services.PetService;
 import guru.springframework.sfgpetclinic.services.VisitService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+@Slf4j
 @Controller
 @RequestMapping("/owners/{ownerId}/pets/{petId}")
 public class VisitController {
@@ -35,7 +41,19 @@ public class VisitController {
     }
 
     @PostMapping("visits/new")
-    public String newVisit(@ModelAttribute Visit visit, @PathVariable("petId") String petId, @PathVariable("ownerId") String ownerId){
+    public String newVisit(@PathVariable("petId") String petId,
+                           @PathVariable("ownerId") String ownerId,
+                           @Valid @ModelAttribute("visit") Visit visit,
+                           BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors() || bindingResult.getErrorCount() != 0){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            return "pets/createOrUpdateVisitForm";
+        }
+
+        System.out.println("not binding error");
         Visit newVisit = new Visit();
         Pet savedPet = petService.findById(Long.valueOf(petId));
 
