@@ -144,7 +144,7 @@ class OwnerControllerTest {
 
         mockMvc.perform(get("/owners/1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/owners/ownerDetails"))
+                .andExpect(view().name("owners/ownerDetails"))
                 .andExpect(model().attributeExists("owner"));
 
         verify(ownerService, times(1)).findById(anyLong());
