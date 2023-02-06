@@ -124,6 +124,18 @@ class OwnerControllerTest {
     }
 
     @Test
+    void testNewOwnerValidationError() throws Exception{
+        Owner owner = new Owner();
+
+        mockMvc.perform(post("/owners/new")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/createOrUpdateOwnerForm"));
+    }
+
+    @Test
     void testShowOwner() throws Exception{
         Owner owner = new Owner();
         owner.setId(1L);
@@ -132,7 +144,7 @@ class OwnerControllerTest {
 
         mockMvc.perform(get("/owners/1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("owners/ownerDetails"))
+                .andExpect(view().name("/owners/ownerDetails"))
                 .andExpect(model().attributeExists("owner"));
 
         verify(ownerService, times(1)).findById(anyLong());
@@ -154,5 +166,71 @@ class OwnerControllerTest {
         mockMvc.perform(get("/owners/abcd"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("400error"));
+    }
+
+    @Test
+    void testInitEditOwner() throws Exception{
+        Owner owner = new Owner();
+        owner.setId(1L);
+
+        when(ownerService.findById(anyLong())).thenReturn(owner);
+
+        mockMvc.perform(get("/owners/1/edit"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("owner"))
+                .andExpect(view().name("owners/createOrUpdateOwnerForm"));
+
+        verify(ownerService, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void testInitEditOwnerNotFoundError() throws Exception{
+        when(ownerService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/owners/1/edit"))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attributeExists("exception"))
+                .andExpect(view().name("404error"));
+    }
+
+    @Test
+    void testInitEditOwnerInvalidValueError() throws Exception{
+        mockMvc.perform(get("/owners/abcd/edit"))
+                .andExpect(status().isBadRequest())
+                .andExpect(model().attributeExists("exception"))
+                .andExpect(view().name("400error"));
+    }
+
+    @Test
+    void testEditOwner() throws Exception{
+        Owner owner = new Owner();
+
+        when(ownerService.save(any())).thenReturn(owner);
+
+        mockMvc.perform(post("/owners/1/edit")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
+                .param("telephone", "abc")
+                .param("firstName", "abc")
+                .param("lastName", "abc")
+                .param("address", "abc")
+                .param("city", "abc")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/owners/1"));
+
+        verify(ownerService, times(1)).save(any());
+    }
+
+    @Test
+    void testEditOwnerValidationError() throws Exception{
+        mockMvc.perform(post("/owners/1/edit")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
+                .param("city", "")
+                .param("address", "")
+        )
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 }
